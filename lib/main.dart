@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/question.dart';
+import 'package:flutter_app/question_brain.dart';
+
+QuestionBrain questionBrain = new QuestionBrain();
 
 void main() => runApp(MyApp());
 
@@ -28,12 +32,13 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
-  List<String> questions = [
-    "Flutter is created by google",
-    "Mt.Everest is not the highest mountain the world ",
-    "birds can fly",
-  ];
+//  List<String> questions = [
+//    "Flutter is created by google",
+//    "Mt.Everest is not the highest mountain the world ",
+//    "birds can fly",
+//  ];
   List<bool> answers = [true, false, true];
+
   int questionNumber = 0;
   @override
   Widget build(BuildContext context) {
@@ -47,7 +52,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[questionNumber],
+                questionBrain.getQuestionText(questionNumber),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -71,7 +76,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 setState(() {
-                  if (answers[questionNumber] == true) {
+                  if (questionBrain.getAnswerResult(questionNumber) == true) {
                     scoreKeeper.add(
                       Icon(Icons.check, color: Colors.green, size: 24),
                     );
@@ -100,7 +105,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 setState(() {
-                  if (answers[questionNumber] == false) {
+                  if (questionBrain.getAnswerResult(questionNumber) == false) {
                     scoreKeeper.add(
                       Icon(Icons.check, color: Colors.green, size: 24),
                     );
