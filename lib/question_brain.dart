@@ -1,6 +1,8 @@
 import 'package:flutter_app/question.dart';
 
 class QuestionBrain {
+  int _questionNumber = 0;
+
   List<Question> _questions = [
     Question("Flutter is created by google", true),
     Question("Mt.Everest is not the highest mountain the world ", false),
@@ -32,11 +34,29 @@ class QuestionBrain {
         true),
   ];
 
-  String getQuestionText(int questionNumber) {
-    return _questions[questionNumber].questionText;
+  String getQuestionText() {
+    return _questions[_questionNumber].questionText;
   }
 
-  bool getAnswerResult(int questionNumber) {
-    return _questions[questionNumber].answerResult;
+  bool getAnswerResult() {
+    return _questions[_questionNumber].answerResult;
+  }
+
+  void nextQuestion() {
+    if (_questionNumber < _questions.length - 1) {
+      _questionNumber++;
+    }
+  }
+
+  bool isFinished() {
+    if (_questionNumber < _questions.length - 1) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  void reset() {
+    _questionNumber = 0;
   }
 }

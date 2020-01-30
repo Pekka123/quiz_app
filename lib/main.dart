@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/question.dart';
 import 'package:flutter_app/question_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 QuestionBrain questionBrain = new QuestionBrain();
 
@@ -32,14 +33,48 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
-//  List<String> questions = [
-//    "Flutter is created by google",
-//    "Mt.Everest is not the highest mountain the world ",
-//    "birds can fly",
-//  ];
-  List<bool> answers = [true, false, true];
+  int score = 0;
 
-  int questionNumber = 0;
+  void checkAnswer({bool userAnswer}) {
+    setState(() {
+      if (questionBrain.isFinished()) {
+        Alert(
+            context: context,
+            title: "The number of question is finished",
+            desc: "You have $score correct question",
+            buttons: [
+              DialogButton(
+                  child: Text(
+                    "PLAY AGAIN ",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    score = 0;
+                    Navigator.pop(context);
+                  })
+            ]).show();
+        questionBrain.reset();
+        scoreKeeper.clear();
+      } else {
+        if (questionBrain.getAnswerResult() == userAnswer) {
+          scoreKeeper.add(
+            Icon(Icons.check, color: Colors.green, size: 24),
+          );
+          score++;
+        } else {
+          scoreKeeper.add(
+            Icon(Icons.close, color: Colors.red, size: 24),
+          );
+        }
+
+        questionBrain.nextQuestion();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -52,7 +87,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questionBrain.getQuestionText(questionNumber),
+                questionBrain.getQuestionText(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 25.0,
@@ -75,18 +110,7 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  if (questionBrain.getAnswerResult(questionNumber) == true) {
-                    scoreKeeper.add(
-                      Icon(Icons.check, color: Colors.green, size: 24),
-                    );
-                  } else {
-                    scoreKeeper.add(
-                      Icon(Icons.close, color: Colors.red, size: 24),
-                    );
-                  }
-                  questionNumber++;
-                });
+                checkAnswer(userAnswer: true);
               },
             ),
           ),
@@ -104,24 +128,17 @@ class _QuizPageState extends State<QuizPage> {
                 ),
               ),
               onPressed: () {
-                setState(() {
-                  if (questionBrain.getAnswerResult(questionNumber) == false) {
-                    scoreKeeper.add(
-                      Icon(Icons.check, color: Colors.green, size: 24),
-                    );
-                  } else {
-                    scoreKeeper.add(
-                      Icon(Icons.close, color: Colors.red, size: 24),
-                    );
-                  }
-                  questionNumber++;
-                });
+                checkAnswer(userAnswer: false);
               },
             ),
           ),
         ),
-        Row(
-          children: scoreKeeper,
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.symmetric(vertical: 10.0),
+          child: Row(
+            children: scoreKeeper,
+          ),
         )
       ],
     );
